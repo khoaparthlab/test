@@ -1,0 +1,14 @@
+[
+  {
+    "color": "white",
+    "type": "cat",
+    "size": "nano",
+    "name": "hamburger"
+  },
+  {
+    "color": "yellow",
+    "type": "cat",
+    "size": "nano",
+    "name": "hamburger"
+  }
+]
