@@ -108,7 +108,7 @@ class _AreaWidgetState extends State<AreaWidget> {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
     WebBrowserInfo webBrowserInfo = await deviceInfo.webBrowserInfo;
-    log('webBrowserInfo: ${webBrowserInfo.data.toString()}');
+    log('webBrowserInfo: ${webBrowserInfo.platform?.runes.toString()}');
   }
 
   @override
