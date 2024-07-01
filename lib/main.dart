@@ -1,13 +1,16 @@
 import 'dart:developer';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
 import 'package:home_module/home_module.dart';
+import 'package:main_app/device_id_manager.dart';
 import 'package:main_app/global_state.dart';
-import 'package:platform_device_id_v3/platform_device_id.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() {
   runApp(const MyApp());
@@ -15,32 +18,27 @@ void main() {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
-  bool? _jailbroken;
-  bool? _developerMode;
+  final _storage = const FlutterSecureStorage();
+  final _accountNameController =
+      TextEditingController(text: 'flutter_secure_storage_service');
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDeviceIde();
     initPlatformState();
-  }
-
-  Future getDeviceIde() async {
-    String? deviceId = await PlatformDeviceId.getDeviceId;
-    log(deviceId ?? '');
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   }
 
   Future<void> initPlatformState() async {
     bool jailbroken;
     bool developerMode;
+
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       jailbroken = await FlutterJailbreakDetection.jailbroken;
@@ -57,12 +55,6 @@ class _MyAppState extends State<MyApp> {
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _jailbroken = jailbroken;
-      _developerMode = developerMode;
-    });
   }
 
   @override
@@ -76,28 +68,73 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: AreaChart(dataPoint: [data, data2, data3, data4]),
+        home: AreaWidget(),
       ),
     );
   }
+}
 
-  SizedBox _renderSecond() {
-    log('_renderSecond');
-    return const SizedBox();
+class AreaWidget extends StatefulWidget {
+  const AreaWidget({
+    super.key,
+  });
+
+  @override
+  State<AreaWidget> createState() => _AreaWidgetState();
+}
+
+class _AreaWidgetState extends State<AreaWidget> {
+  bool isSameDevice = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      isSameDevice = await getDeviceIdManager().checkDeviceId();
+      setState(() {});
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
-  Column _renderText(String globalState, int one) {
-    log('_renderText');
-    return Column(
-      children: [
-        Text(globalState),
-        HomePage(
-          child: Text(one.toString()),
-        ),
-      ],
-    );
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getDeviceId();
+  }
+
+  void _getDeviceId() async {
+    String deviceId = await getDeviceIdManager().getDeviceId();
+    log(deviceId);
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    WebBrowserInfo webBrowserInfo = await deviceInfo.webBrowserInfo;
+    log('webBrowserInfo: ${webBrowserInfo.data.toString()}');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    log('isSameDeviceMain3 ${isSameDevice.toString()}');
+
+    return isSameDevice
+        ? Column(
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      isSameDevice = true;
+                    });
+                  },
+                  child: Text('press')),
+              AreaChart(dataPoint: [data, data2, data3, data4]),
+            ],
+          )
+        : SizedBox();
   }
 }
+
+enum _Actions { deleteAll, isProtectedDataAvailable }
+
+enum _ItemActions { delete, edit, containsKey, read }
 
 List<ChartData> data = [
   ChartData(DateTime(1964, 1, 1), 81),

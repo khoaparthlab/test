@@ -43,7 +43,8 @@ dependencies:
   platform_device_id_v3: 1.0.0
   flutter_secure_storage: 9.2.2
   flutter_jailbreak_detection: 1.10.0
-  device_info: ^2.0.3
+  device_info_plus: 10.1.0
+  uuid: 4.4.0
 
 dev_dependencies:
   flutter_test:
