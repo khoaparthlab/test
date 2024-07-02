@@ -45,6 +45,7 @@ dependencies:
   flutter_jailbreak_detection: 1.10.0
   device_info_plus: 10.1.0
   uuid: 4.4.0
+  http: 1.2.1
 
 dev_dependencies:
   flutter_test:

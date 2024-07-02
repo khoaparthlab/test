@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:html'
     if (dart.library.io) 'dart:io'
     if (dart.library.html) 'dart:html';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:main_app/device_manager_abstract.dart';
@@ -23,13 +25,23 @@ class DeviceIdManager implements DeviceIdManagerInterface {
   Future<String> getDeviceId() async {
     String? deviceId = window.localStorage[_deviceIdKey];
     if (deviceId == null) {
-      var uuid = const Uuid();
-      deviceId = uuid.v4();
-      window.localStorage[_deviceIdKey] = deviceId;
-      _addNewItem(deviceId);
+      try {
+        final response =
+            await http.get(Uri.parse('https://api.ipify.org?format=json'));
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          deviceId = data['ip'];
+        } else {
+          throw Exception('Failed to get IP address');
+        }
+      } catch (e) {
+        log(e.toString());
+      }
+      window.localStorage[_deviceIdKey] = deviceId ?? '';
+      _addNewItem(deviceId ?? '');
     }
 
-    return deviceId;
+    return deviceId ?? '';
   }
 
   Future<void> _addNewItem(String deviceId) async {
@@ -47,18 +59,26 @@ class DeviceIdManager implements DeviceIdManagerInterface {
 
   @override
   Future<bool> checkDeviceId() async {
-    String? deviceId = window.localStorage[_deviceIdKey];
-    if (deviceId != null) {
+    String? deviceId = '';
+    String? ipStorage = window.localStorage[_deviceIdKey];
+    final response =
+        await http.get(Uri.parse('https://api.ipify.org?format=json'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      deviceId = data['ip'];
+    }
+    if (ipStorage != null) {
       final listAll = await _storage.readAll(
         iOptions: PlatformOptions().getIOSOptions(),
         aOptions: PlatformOptions().getAndroidOptions(),
         webOptions: PlatformOptions().getWebOptions(),
       );
-      log('deviceId: $deviceId');
       final isSameDevice = listAll.containsValue(deviceId);
       log('isSameDevice: $isSameDevice');
       if (isSameDevice) return true;
       return false;
+    } else {
+      window.localStorage[_deviceIdKey] = deviceId ?? 'none';
     }
     return false;
   }

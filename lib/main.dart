@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -105,10 +107,6 @@ class _AreaWidgetState extends State<AreaWidget> {
   void _getDeviceId() async {
     String deviceId = await getDeviceIdManager().getDeviceId();
     log(deviceId);
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-
-    WebBrowserInfo webBrowserInfo = await deviceInfo.webBrowserInfo;
-    log('webBrowserInfo: ${webBrowserInfo.platform?.runes.toString()}');
   }
 
   @override
