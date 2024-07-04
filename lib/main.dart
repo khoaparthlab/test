@@ -76,54 +76,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class AreaWidget extends StatefulWidget {
-  const AreaWidget({
-    super.key,
-  });
-
-  @override
-  State<AreaWidget> createState() => _AreaWidgetState();
-}
-
-class _AreaWidgetState extends State<AreaWidget> {
-  bool isSameDevice = false;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      isSameDevice = await getDeviceIdManager().checkDeviceId();
-      setState(() {});
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    log('isSameDeviceMain3 ${isSameDevice.toString()}');
-
-    return isSameDevice
-        ? Column(
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      isSameDevice = true;
-                    });
-                  },
-                  child: Text('press')),
-              AreaChart(dataPoint: [data, data2, data3, data4]),
-            ],
-          )
-        : SizedBox();
-  }
-}
-
 enum _Actions { deleteAll, isProtectedDataAvailable }
 
 enum _ItemActions { delete, edit, containsKey, read }

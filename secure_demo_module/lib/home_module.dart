@@ -4,6 +4,7 @@ import 'dart:math';
 
 export './src/homepage.dart';
 export './src/area_chart.dart';
+export './src/test_chart_secure.dart';
 
 /// A Calculator.
 class Calculator {
