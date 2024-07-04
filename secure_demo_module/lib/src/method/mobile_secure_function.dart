@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:main_app/device_manager_abstract.dart';
-import 'package:main_app/utils/setting_storage_platform/setting_storage_plaltform.dart';
+import 'package:home_module/src/factory/device_manager_abstract.dart';
+import 'package:home_module/utils/setting_storage_platform/setting_storage_plaltform.dart';
 
 class DeviceIdManager implements DeviceIdManagerInterface {
   static const String _deviceIdKey = 'device_id';

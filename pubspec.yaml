@@ -35,7 +35,7 @@ dependencies:
 
 
   home_module:
-    path: ./home_module
+    path: ./secure_demo_module
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -46,6 +46,7 @@ dependencies:
   device_info_plus: 10.1.0
   uuid: 4.4.0
   http: 1.2.1
+  dart_jsonwebtoken: 2.14.0
 
 dev_dependencies:
   flutter_test:

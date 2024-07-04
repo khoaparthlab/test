@@ -8,7 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
 import 'package:home_module/home_module.dart';
-import 'package:main_app/device_id_manager.dart';
+import 'package:home_module/src/factory_manager/device_id_manager.dart';
 import 'package:main_app/global_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -101,12 +101,6 @@ class _AreaWidgetState extends State<AreaWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _getDeviceId();
-  }
-
-  void _getDeviceId() async {
-    String deviceId = await getDeviceIdManager().getDeviceId();
-    log(deviceId);
   }
 
   @override

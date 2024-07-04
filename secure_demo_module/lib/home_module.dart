@@ -1,4 +1,4 @@
-library home_module;
+library secure_module;
 
 import 'dart:math';
 
